@@ -122,7 +122,7 @@ public class WebActionSteps {
         LOGGER.info("в списке '{}' выбран элемент '{}'", list, value);
     }
 
-    @Если("с помощью элемента {string} загрузить файл {string}")
+    @Если("с помощью элемента {string} загрузить файл, расположенный по адресу {string}")
     public void downloadFile(String elementName, String path) {
         SelenideElement element = pageManager
                 .getCurrentPage()
