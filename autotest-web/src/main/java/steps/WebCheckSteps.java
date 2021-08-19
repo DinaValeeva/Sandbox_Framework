@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.lanit.at.web.pagecontext.PageManager;
 
+import java.util.List;
+
 public class WebCheckSteps {
 
     private PageManager pageManager;
@@ -77,7 +79,7 @@ public class WebCheckSteps {
         WebChecks.elementVisibleOnPage(element, timeoutSeconds);
         LOGGER.info("на странице '{}' имеется элемент '{}'", pageManager.getCurrentPage().name(), elementName);
     }
-    
+
     /**
      * проверка, что на странице отображен элемент
      *
@@ -131,8 +133,8 @@ public class WebCheckSteps {
     /**
      * проверка значения текста в поле
      *
-     * @param fieldName название поля
-     * @param expectedText      текст
+     * @param fieldName    название поля
+     * @param expectedText текст
      */
     @Когда("проверить, что поле {string} заполнено значением {string}")
     public void checkFieldContainsText(String fieldName, String expectedText) {
@@ -144,13 +146,27 @@ public class WebCheckSteps {
     /**
      * проверка значения в выпадающем списке
      *
-     * @param fieldName название списка
+     * @param fieldName    название списка
      * @param expectedText ожидаемое значение
      */
     @Когда("проверить, что в выпадающем списке {string} выбрано {string}")
-    public void checkListContainsText(String fieldName, String expectedText) {
+    public void checkIsSelectedInDropdown(String fieldName, String expectedText) {
         SelenideElement element = pageManager.getCurrentPage().getElement(fieldName);
         WebChecks.checkIsSelectedInDropdown(element, expectedText, 10);
         LOGGER.info("в списке '{}' содержится значение '{}'", fieldName, expectedText);
     }
+
+    /**
+     * проверка значений в выпадающем списке
+     *
+     * @param fieldName название списка
+     * @param fields    ожидаемые значения
+     */
+    @Когда("проверить, что в выпадающем списке {string} присутствуют поля:")
+    public void checkDropdownContainsTexts(String fieldName, List<String> fields) {
+        SelenideElement element = pageManager.getCurrentPage().getElement(fieldName);
+        fields.forEach(field -> WebChecks.checkIsContainsInDropdown(element, field, 0));
+        LOGGER.info("в списке '{}' содержатся значения '{}'", fieldName, fields);
+    }
+
 }
