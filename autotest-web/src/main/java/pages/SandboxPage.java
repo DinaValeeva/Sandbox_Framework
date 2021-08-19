@@ -45,10 +45,9 @@ public class SandboxPage extends WebPage {
     @Name("Выполнить до")
     private SelenideElement doUntil = $x("//input[@name='due_date']");
 
+    @Name("Выберите файл")
+    private SelenideElement chooseFileButton = $x("//label[contains(text(),'Прикрепить файл')]/..//input[@type='file']");
+
     @Name("Ваш адрес электронной почты")
     private SelenideElement submitterEmail = $x("//input[@name='submitter_email']");
-
-    @Name("Отправить тикет")
-    private SelenideElement submitButton = $x("//button[@type='submit']");
-
 }
