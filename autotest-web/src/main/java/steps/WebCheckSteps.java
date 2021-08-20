@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import ru.lanit.at.web.pagecontext.PageManager;
 
 import java.util.List;
+import java.util.Map;
 
 public class WebCheckSteps {
 
@@ -154,6 +155,18 @@ public class WebCheckSteps {
         SelenideElement element = pageManager.getCurrentPage().getElement(fieldName);
         WebChecks.checkIsContains(element, expectedText, 0);
         LOGGER.info("в поле '{}' содержится текст '{}'", fieldName, expectedText);
+    }
+
+    /**
+     * проверка значений в полях
+     *
+     * @param map пара имя поля - ожидаемое наличие текста в поле
+     */
+    @Когда("проверить, что в полях содержатся значения:")
+    public void checkFieldsContainsText(Map<String, String> map) {
+        for (Map.Entry<String, String> pair : map.entrySet()) {
+            checkFieldContainsText(pair.getKey(), pair.getValue());
+        }
     }
 
     /**
