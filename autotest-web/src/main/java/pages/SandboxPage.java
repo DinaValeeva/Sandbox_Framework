@@ -50,4 +50,14 @@ public class SandboxPage extends WebPage {
 
     @Name("Ваш адрес электронной почты")
     private SelenideElement submitterEmail = $x("//input[@name='submitter_email']");
+
+    @Name("Очередь:")
+    private SelenideElement queueFinal = $x("//th[contains(text(),'Очередь:')]");
+
+    @Name("Электронный адрес отправителя")
+    private SelenideElement submitterEmailFinal = $x("//th[contains(text(),'Электронный адрес отправителя')]//parent::tr");
+
+    @Name("Поле Приоритет")
+    private SelenideElement priorityFinal = $x("//th[contains(text(),'Приоритет')]//parent::tr");
+
 }

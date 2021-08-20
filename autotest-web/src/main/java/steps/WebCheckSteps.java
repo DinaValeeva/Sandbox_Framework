@@ -137,14 +137,27 @@ public class WebCheckSteps {
      * @param expectedText текст
      */
     @Когда("проверить, что поле {string} заполнено значением {string}")
-    public void checkFieldContainsText(String fieldName, String expectedText) {
+    public void checkFieldEqualsText(String fieldName, String expectedText) {
         SelenideElement element = pageManager.getCurrentPage().getElement(fieldName);
         WebChecks.checkAttribute(element, "value", expectedText, 10);
         LOGGER.info("в поле '{}' содержится текст '{}'", fieldName, expectedText);
     }
 
     /**
-     * проверка значения в выпадающем списке
+     * проверка наличия текста в поле
+     *
+     * @param fieldName    название поля
+     * @param expectedText текст
+     */
+    @Когда("проверить, что поле {string} содержит значение {string}")
+    public void checkFieldContainsText(String fieldName, String expectedText) {
+        SelenideElement element = pageManager.getCurrentPage().getElement(fieldName);
+        WebChecks.checkIsContains(element, expectedText, 0);
+        LOGGER.info("в поле '{}' содержится текст '{}'", fieldName, expectedText);
+    }
+
+    /**
+     * проверка выбранного значения в выпадающем списке
      *
      * @param fieldName    название списка
      * @param expectedText ожидаемое значение
@@ -157,7 +170,7 @@ public class WebCheckSteps {
     }
 
     /**
-     * проверка значений в выпадающем списке
+     * проверка наличия значений в выпадающем списке
      *
      * @param fieldName название списка
      * @param fields    ожидаемые значения
@@ -165,7 +178,7 @@ public class WebCheckSteps {
     @Когда("проверить, что в выпадающем списке {string} присутствуют поля:")
     public void checkDropdownContainsTexts(String fieldName, List<String> fields) {
         SelenideElement element = pageManager.getCurrentPage().getElement(fieldName);
-        fields.forEach(field -> WebChecks.checkIsContainsInDropdown(element, field, 0));
+        fields.forEach(field -> WebChecks.checkIsContains(element, field, 0));
         LOGGER.info("в списке '{}' содержатся значения '{}'", fieldName, fields);
     }
 
