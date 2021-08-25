@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import ru.lanit.at.web.pagecontext.PageManager;
 import ru.lanit.at.utils.Sleep;
 
+import java.io.File;
+
 import static com.codeborne.selenide.Selenide.$;
 
 
@@ -118,5 +120,14 @@ public class WebActionSteps {
                 .shouldBe(Condition.visible)
                 .selectOptionContainingText(value);
         LOGGER.info("в списке '{}' выбран элемент '{}'", list, value);
+    }
+
+    @Если("с помощью элемента {string} загрузить файл, расположенный по адресу {string}")
+    public void downloadFile(String elementName, String path) {
+        SelenideElement element = pageManager
+                .getCurrentPage()
+                .getElement(elementName);
+        element.uploadFile(new File(path));
+        LOGGER.info(path, "был успешно загружен");
     }
 }
