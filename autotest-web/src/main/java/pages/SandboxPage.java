@@ -46,7 +46,7 @@ public class SandboxPage extends WebPage {
     private SelenideElement doUntil = $x("//input[@name='due_date']");
 
     @Name("Выберите файл")
-    private SelenideElement chooseFileButton = $x("//label[contains(text(),'Прикрепить файл')]/..//input[@type='file']");
+    private SelenideElement chooseFileButton = $x("//label[@for='id_attachment']/..//input[@type='file']");
 
     @Name("Ваш адрес электронной почты")
     private SelenideElement submitterEmail = $x("//input[@name='submitter_email']");
@@ -57,7 +57,10 @@ public class SandboxPage extends WebPage {
     @Name("Электронный адрес отправителя")
     private SelenideElement submitterEmailFinal = $x("//th[contains(text(),'Электронный адрес отправителя')]//parent::tr");
 
-    @Name("Поле Приоритет")
-    private SelenideElement priorityFinal = $x("//th[contains(text(),'Приоритет')]//parent::tr");
+    @Name("Имя пользователя")
+    private SelenideElement navItemDropdownUserName = $x("//a[@id='userDropdown']");
+
+    @Name("Настройки пользователя")
+    private SelenideElement navItemDropdownUserSettings = $x("//a[@href='/settings/']");
 
 }
