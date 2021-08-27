@@ -153,4 +153,28 @@ public class WebCheckSteps {
         WebChecks.checkIsSelectedInDropdown(element, expectedText, 10);
         LOGGER.info("в списке '{}' содержится значение '{}'", fieldName, expectedText);
     }
+
+    /**
+     * проверка является/не является ссылкой
+     *
+     * @param elementName название элемента
+     */
+    @Когда("проверить, что элемент {string} является ссылкой")
+    public void checkElementLink(String elementName) {
+        SelenideElement element = pageManager.getCurrentPage().getElement(elementName);
+        WebChecks.isElementLink(element);
+        LOGGER.info("Элемент '{}' - является ссылкой", elementName);
+    }
+
+    @Когда("проверить, что элемент {string} не является ссылкой")
+    public void checkElementNotLink(String elementName) {
+        SelenideElement element = pageManager.getCurrentPage().getElement(elementName);
+        WebChecks.isElementNotLink(element);
+        LOGGER.info("Элемент '{}' - не является ссылкой", elementName);
+    }
+
+    @Когда("проверить, что первый тикет удален")
+    public void checkFirstTicketDeleted() {
+        WebChecks.ticketWithNameAbsentOnPage(WebActionSteps.firstTicketName);
+    }
 }
