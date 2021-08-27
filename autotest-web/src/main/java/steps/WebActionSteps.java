@@ -17,6 +17,7 @@ import ru.lanit.at.utils.Sleep;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.io.File;
 
 import static com.codeborne.selenide.Selenide.$;
 
@@ -129,6 +130,15 @@ public class WebActionSteps {
                 .selectOptionContainingText(value);
         LOGGER.info("в списке '{}' выбран элемент '{}'", list, value);
     }
+  
+  @Если("с помощью элемента {string} загрузить файл, расположенный по адресу {string}")
+    public void downloadFile(String elementName, String path) {
+        SelenideElement element = pageManager
+                .getCurrentPage()
+                .getElement(elementName);
+        element.uploadFile(new File(path));
+        LOGGER.info(path, "был успешно загружен");
+    }
 
     @Если("кликнуть на первый тикет")
     public void clickOnFirstTicket() {
@@ -195,5 +205,5 @@ public class WebActionSteps {
         for (WebElement webElement : allTicketsList) {
             Assert.assertTrue(webElement.findElement(By.xpath(".//input[@type='checkbox']")).isSelected());
         }
-    }
+    
 }

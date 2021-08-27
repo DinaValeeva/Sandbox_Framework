@@ -73,6 +73,19 @@ public class WebChecks {
      */
     public static void checkIsSelectedInDropdown(SelenideElement element, String expectValue, Integer timeoutSeconds) {
         int timeout = getTimeoutSeconds(timeoutSeconds);
+        checkIsContains(element, expectValue, timeout);
+        String actualValue = element.getSelectedText();
+        Assert.assertEquals(expectValue, actualValue, "Выбранное значение в списке не соответствует ожидаемому");
+    }
+
+    /**
+     * Проверяет наличие текста у элемента
+     *
+     * @param element     Элемент
+     * @param expectValue Ожидаемое значение
+     */
+    public static void checkIsContains(SelenideElement element, String expectValue, Integer timeoutSeconds) {
+        int timeout = getTimeoutSeconds(timeoutSeconds);
         element
                 .shouldBe(Condition.exist, Duration.ofSeconds(timeout))
                 .shouldBe(Condition.visible)
