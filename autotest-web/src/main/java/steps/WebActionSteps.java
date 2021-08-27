@@ -205,5 +205,5 @@ public class WebActionSteps {
         for (WebElement webElement : allTicketsList) {
             Assert.assertTrue(webElement.findElement(By.xpath(".//input[@type='checkbox']")).isSelected());
         }
-    
+    }
 }
