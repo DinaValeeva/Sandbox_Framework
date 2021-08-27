@@ -25,7 +25,7 @@ public class SandboxPage extends WebPage {
     private SelenideElement enterButton = $x("//input[@value='Вход']");
 
     @Name("Таблица тикетов")
-    private SelenideElement ticketTable = $x("//table[@id='ticketTable']");
+    private SelenideElement ticketTable = $x("//table[@id='ticketTable']//tbody");
 
     @Name("Создать тикет")
     private SelenideElement createTicket = $x("//*[text()='Создать тикет']");
@@ -51,4 +51,27 @@ public class SandboxPage extends WebPage {
     @Name("Отправить тикет")
     private SelenideElement submitButton = $x("//button[@type='submit']");
 
+    @Name("Тикеты")
+    private SelenideElement tickets = $x("//a[text()='Тикеты']");
+
+    @Name("Overview")
+    private SelenideElement overview = $x("//li[text()='Overview']");
+
+    @Name("Первый тикет")
+    private SelenideElement firstTicket = $x("//table[@id='ticketTable']//a[1]");
+
+    @Name("DH-1")
+    private SelenideElement dh1 = $x("//li[contains(text(),'DH-1')]");
+
+    @Name("Удалить")
+    private SelenideElement deleteButton = $x("//button[contains(text(),'Удалить')]");
+
+    @Name("С выбранными тикетами:")
+    private SelenideElement ticketActionDropdown = $x("//label[contains(text(),'С выбранными тикетами:')]/..//select");
+
+    @Name("Выполнить")
+    private SelenideElement goButton = $x("//div[@class='card']//button[contains(.,'Выполнить')]");
+
+    @Name("Все")
+    private SelenideElement allTicketsButton = $x("//div[@class='card']//button[contains(.,'Все')]");
 }
