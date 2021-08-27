@@ -25,7 +25,7 @@ public class SandboxUserSettingsPage extends WebPage {
     private SelenideElement checkboxEmailOnTicketAssign = $x("//input[@id='id_email_on_ticket_assign']");
 
     @Name("Количество тикетов на страницу")
-    private SelenideElement dropdownTicketPerPage = $x("//label[@for='id_tickets_per_page']/");
+    private SelenideElement dropdownTicketPerPage = $x("//select[@id='id_tickets_per_page']");
 
     @Name("Использовать мой адрес электронной почты при отправке тикета?")
     private SelenideElement checkboxEmailOnTicketSubmitter = $x("//input[@id='id_use_email_as_submitter']");
