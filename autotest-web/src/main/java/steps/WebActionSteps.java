@@ -6,11 +6,17 @@ import com.codeborne.selenide.SelenideElement;
 import io.cucumber.java.ru.Если;
 import io.cucumber.java.ru.И;
 import io.cucumber.java.ru.Когда;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.Assert;
 import ru.lanit.at.web.pagecontext.PageManager;
 import ru.lanit.at.utils.Sleep;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.io.File;
 
 import static com.codeborne.selenide.Selenide.$;
@@ -20,6 +26,9 @@ public class WebActionSteps {
 
     private PageManager pageManager;
     private static final Logger LOGGER = LoggerFactory.getLogger(WebActionSteps.class);
+
+    public static String firstTicketName;
+    public static Set<String> checkedTicketNames = new HashSet<>();
 
     public WebActionSteps(PageManager manager) {
         this.pageManager = manager;
@@ -121,8 +130,8 @@ public class WebActionSteps {
                 .selectOptionContainingText(value);
         LOGGER.info("в списке '{}' выбран элемент '{}'", list, value);
     }
-
-    @Если("с помощью элемента {string} загрузить файл, расположенный по адресу {string}")
+  
+  @Если("с помощью элемента {string} загрузить файл, расположенный по адресу {string}")
     public void downloadFile(String elementName, String path) {
         SelenideElement element = pageManager
                 .getCurrentPage()
@@ -130,4 +139,71 @@ public class WebActionSteps {
         element.uploadFile(new File(path));
         LOGGER.info(path, "был успешно загружен");
     }
+
+    @Если("кликнуть на первый тикет")
+    public void clickOnFirstTicket() {
+        SelenideElement element = pageManager
+                .getCurrentPage()
+                .getElement("Первый тикет");
+        element
+                .shouldBe(Condition.visible)
+                .click();
+        LOGGER.info("клик на элемент 'Первый тикет'");
+    }
+
+    @И("запомнить первый тикет")
+    public void saveFirstTicket() {
+        firstTicketName = pageManager
+                .getCurrentPage()
+                .getElement("Первый тикет")
+                .text();
+    }
+
+    @И("выбрать {int} тикетов в списке путем активации чекбокса")
+    public void activateCheckboxInElement(int ticketNumber) {
+        SelenideElement tableTicket = pageManager
+                .getCurrentPage()
+                .getElement("Таблица тикетов");
+        for (int i = 1; i <= ticketNumber; i++) {
+            WebElement ticket = tableTicket.findElement(By.xpath(".//tr[" + i + "]"));
+            ticket.findElement(By.xpath(".//input[@type='checkbox']")).click();
+            checkedTicketNames.add(ticket.findElement(By.xpath(".//div[@class='tickettitle']//a")).getText());
+        }
+    }
+
+    @И("запомнить имена выбранных тикетов")
+    public void saveCheckedCheckboxesNames() {
+        SelenideElement tableTicket = pageManager
+                .getCurrentPage()
+                .getElement("Таблица тикетов");
+        List<WebElement> allTicketsList = tableTicket.findElements(By.xpath(".//tr"));
+        checkedTicketNames.clear();
+        for (WebElement webElement : allTicketsList) {
+            checkedTicketNames.add(webElement.findElement(By.xpath(".//div[@class='tickettitle']//a")).getText());
+        }
+    }
+
+    @И("проверить, что выбранные тикеты отсутствуют")
+    public void verifyCheckedTicketsDeleted() {
+        SelenideElement tableTicket = pageManager
+                .getCurrentPage()
+                .getElement("Таблица тикетов");
+        Set<String> allTicketsSet = new HashSet<>();
+        List<WebElement> allTicketsList = tableTicket.findElements(By.xpath(".//tr"));
+        for (int i = 0; i < allTicketsList.size(); i++) {
+            allTicketsSet.add(allTicketsList.get(i).findElement(By.xpath(".//div[@class='tickettitle']//a")).getText());
+        }
+        Assert.assertFalse(allTicketsSet.containsAll(checkedTicketNames));
+    }
+
+    @И("проверить, что выбраны все тикеты")
+    public void verifyCheckedAllTickets() {
+        SelenideElement tableTicket = pageManager
+                .getCurrentPage()
+                .getElement("Таблица тикетов");
+        List<WebElement> allTicketsList = tableTicket.findElements(By.xpath(".//tr"));
+        for (WebElement webElement : allTicketsList) {
+            Assert.assertTrue(webElement.findElement(By.xpath(".//input[@type='checkbox']")).isSelected());
+        }
+    
 }

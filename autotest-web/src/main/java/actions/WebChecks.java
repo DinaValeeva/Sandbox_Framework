@@ -1,9 +1,6 @@
 package actions;
 
-import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.Selectors;
-import com.codeborne.selenide.SelenideElement;
-import com.codeborne.selenide.WebDriverRunner;
+import com.codeborne.selenide.*;
 import com.codeborne.selenide.ex.ElementNotFound;
 import com.codeborne.selenide.ex.ElementShould;
 import org.aeonbits.owner.ConfigFactory;
@@ -18,6 +15,7 @@ import ru.lanit.at.web.properties.WebConfigurations;
 import java.time.Duration;
 
 import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
 
 public class WebChecks {
 
@@ -212,5 +210,26 @@ public class WebChecks {
         } catch (ElementShould elementShould) {
             return false;
         }
+    }
+
+    /**
+     * Проверяет, что элемент является/не является ссылкой
+     */
+    public static void isElementLink(SelenideElement element) {
+        String elementHref = element.getAttribute("href");
+        Assert.assertNotNull(elementHref);
+    }
+
+    public static void isElementNotLink(SelenideElement element) {
+        String elementHref = element.getAttribute("href");
+        Assert.assertNull(elementHref);
+    }
+
+    /**
+     * Проверяет, что на странице отсутствует тикет с именем
+     */
+    public static void ticketWithNameAbsentOnPage(String ticketName) {
+        ElementsCollection tickets = $$(Selectors.byXpath("//table[@id='ticketTable']//a"));
+        Assert.assertTrue(tickets.stream().noneMatch(t -> t.text().equals(ticketName)));
     }
 }

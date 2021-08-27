@@ -181,7 +181,7 @@ public class WebCheckSteps {
         WebChecks.checkIsSelectedInDropdown(element, expectedText, 10);
         LOGGER.info("в списке '{}' содержится значение '{}'", fieldName, expectedText);
     }
-
+  
     /**
      * проверка наличия значений в выпадающем списке
      *
@@ -194,5 +194,28 @@ public class WebCheckSteps {
         fields.forEach(field -> WebChecks.checkIsContains(element, field, 0));
         LOGGER.info("в списке '{}' содержатся значения '{}'", fieldName, fields);
     }
+  
+    /**
+     * проверка является/не является ссылкой
+     *
+     * @param elementName название элемента
+     */
+    @Когда("проверить, что элемент {string} является ссылкой")
+    public void checkElementLink(String elementName) {
+        SelenideElement element = pageManager.getCurrentPage().getElement(elementName);
+        WebChecks.isElementLink(element);
+        LOGGER.info("Элемент '{}' - является ссылкой", elementName);
+    }
 
+    @Когда("проверить, что элемент {string} не является ссылкой")
+    public void checkElementNotLink(String elementName) {
+        SelenideElement element = pageManager.getCurrentPage().getElement(elementName);
+        WebChecks.isElementNotLink(element);
+        LOGGER.info("Элемент '{}' - не является ссылкой", elementName);
+    }
+
+    @Когда("проверить, что первый тикет удален")
+    public void checkFirstTicketDeleted() {
+        WebChecks.ticketWithNameAbsentOnPage(WebActionSteps.firstTicketName);
+    }
 }
