@@ -52,6 +52,32 @@ public class WebChecks {
     }
 
     /**
+     * Проверяет, что атрибут присутствует
+     *
+     * @param element     Элемент
+     * @param expectValue Ожидаемое значение атрибута
+     */
+    public static void isAttributeExist(SelenideElement element, String expectValue, Integer timeoutSeconds) {
+        int timeout = getTimeoutSeconds(timeoutSeconds);
+        element
+                .shouldBe(Condition.exist, Duration.ofSeconds(timeout))
+                .shouldBe(Condition.attribute(expectValue), Duration.ofSeconds(timeout));
+    }
+
+    /**
+     * Проверяет, что атрибут отсутствует
+     *
+     * @param element     Элемент
+     * @param expectValue Ожидаемое значение атрибута
+     */
+    public static void isAttributeNotExist(SelenideElement element, String expectValue, Integer timeoutSeconds) {
+        int timeout = getTimeoutSeconds(timeoutSeconds);
+        element
+                .shouldBe(Condition.exist, Duration.ofSeconds(timeout))
+                .shouldBe(Condition.not(Condition.attribute(expectValue)));
+    }
+
+    /**
      * Проверяет, что атрибут элемента равен ожидаемому
      *
      * @param element     Элемент

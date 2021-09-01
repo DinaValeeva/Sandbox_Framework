@@ -130,7 +130,7 @@ public class WebActionSteps {
                 .selectOptionContainingText(value);
         LOGGER.info("в списке '{}' выбран элемент '{}'", list, value);
     }
-  
+
   @Если("с помощью элемента {string} загрузить файл, расположенный по адресу {string}")
     public void downloadFile(String elementName, String path) {
         SelenideElement element = pageManager
@@ -206,4 +206,27 @@ public class WebActionSteps {
             Assert.assertTrue(webElement.findElement(By.xpath(".//input[@type='checkbox']")).isSelected());
         }
     }
+
+    @Если("активировать чекбокс {string}")
+    public void checkboxOn(String elementName) {
+        SelenideElement element = pageManager
+                .getCurrentPage()
+                .getElement(elementName);
+        element
+                .should(Condition.type("checkbox"))
+                .click();
+        LOGGER.info("активирован чекбокс '{}'", elementName);
+    }
+
+    @Если("деактивировать чекбокс {string}")
+    public void checkboxOff(String elementName) {
+        SelenideElement element = pageManager
+                .getCurrentPage()
+                .getElement(elementName);
+        element
+                .shouldBe(Condition.checked)
+                .click();
+        LOGGER.info("деактивирован чекбокс '{}'", elementName);
+    }
+
 }

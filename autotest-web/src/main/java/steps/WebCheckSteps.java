@@ -1,6 +1,7 @@
 package steps;
 
 import actions.WebChecks;
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
 import io.cucumber.java.ru.Когда;
 import io.cucumber.java.ru.Тогда;
@@ -8,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.lanit.at.web.pagecontext.PageManager;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
@@ -181,7 +183,7 @@ public class WebCheckSteps {
         WebChecks.checkIsSelectedInDropdown(element, expectedText, 10);
         LOGGER.info("в списке '{}' содержится значение '{}'", fieldName, expectedText);
     }
-  
+
     /**
      * проверка наличия значений в выпадающем списке
      *
@@ -194,7 +196,7 @@ public class WebCheckSteps {
         fields.forEach(field -> WebChecks.checkIsContains(element, field, 0));
         LOGGER.info("в списке '{}' содержатся значения '{}'", fieldName, fields);
     }
-  
+
     /**
      * проверка является/не является ссылкой
      *
@@ -218,4 +220,30 @@ public class WebCheckSteps {
     public void checkFirstTicketDeleted() {
         WebChecks.ticketWithNameAbsentOnPage(WebActionSteps.firstTicketName);
     }
+    /**
+     * проверка активации чекбокса
+     *
+     * @param fieldName название чекбокса
+     */
+    @Когда("проверить, что чекбокс {string} активирован")
+    public void isCheckboxChecked(String fieldName) {
+        SelenideElement element = pageManager.getCurrentPage().getElement(fieldName);
+        WebChecks.checkAttribute(element, "type", "checkbox", 10);
+        WebChecks.isAttributeExist(element, "checked", 10);
+        LOGGER.info("проверка успешна, чекбокс '{}' активирован", fieldName);
+    }
+
+    /**
+     * проверка деактивации чекбокса
+     *
+     * @param fieldName название чекбокса
+     */
+    @Когда("проверить, что чекбокс {string} деактивирован")
+    public void isCheckboxNotChecked(String fieldName) {
+        SelenideElement element = pageManager.getCurrentPage().getElement(fieldName);
+        WebChecks.checkAttribute(element, "type", "checkbox", 10);
+        WebChecks.isAttributeNotExist(element, "checked", 10);
+        LOGGER.info("проверка успешна, чекбокс '{}' активирован", fieldName);
+    }
+
 }
