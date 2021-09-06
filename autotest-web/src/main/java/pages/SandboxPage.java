@@ -25,7 +25,7 @@ public class SandboxPage extends WebPage {
     private SelenideElement enterButton = $x("//input[@value='Вход']");
 
     @Name("Таблица тикетов")
-    private SelenideElement ticketTable = $x("//table[@id='ticketTable']//tbody");
+    private SelenideElement ticketTable = $x("//table[@id='ticketTable']");
 
     @Name("Создать тикет")
     private SelenideElement createTicket = $x("//*[text()='Создать тикет']");
@@ -79,11 +79,47 @@ public class SandboxPage extends WebPage {
     private SelenideElement deleteButton = $x("//button[contains(text(),'Удалить')]");
 
     @Name("С выбранными тикетами:")
-    private SelenideElement ticketActionDropdown = $x("//label[contains(text(),'С выбранными тикетами:')]/..//select");
+    private SelenideElement ticketActionDropdown = $x("//select[@id='id_mass_action']");
 
     @Name("Выполнить")
     private SelenideElement goButton = $x("//div[@class='card']//button[contains(.,'Выполнить')]");
 
     @Name("Все")
     private SelenideElement allTicketsButton = $x("//div[@class='card']//button[contains(.,'Все')]");
+
+    @Name("Поиск...")
+    private SelenideElement searchQuery = $x("//input[@id='search_query']");
+
+    @Name("Выполнить поиск")
+    private SelenideElement search = $x("//form[@id='searchform']//button[@type='submit']");
+
+    @Name("Column visibility")
+    private SelenideElement columnVisibility = $x("//div[@id='ticketTable_wrapper']//button[contains(.,'Column visibility')]");
+
+    @Name("Контекстное меню Column visibility")
+    private SelenideElement menuColumnVisibility = $x("//div[@id='ticketTable_wrapper']//div[@role='menu']");
+
+    @Name("Timeline")
+    private SelenideElement timeline = $x("//a[@id='timelinetabcontents-tab']");
+
+    @Name("Стрелка к следующему тикету")
+    private SelenideElement nextTicket = $x("//div[@class='tl-slidenav-next']//div[@class='tl-slidenav-icon']");
+
+    @Name("Стрелка к предыдущему тикету")
+    private SelenideElement previousTicket = $x("//div[@class='tl-slidenav-previous']//div[@class='tl-slidenav-icon']");
+
+    @Name("View ticket первый тикет")
+    private SelenideElement viewTicket = $x("(//a[@class = 'btn' and contains(text(),'View ticket')])[1]");
+
+    @Name("Show entries")
+    private SelenideElement showEntries = $x("//div[@id='ticketTable_length']//select[@name='ticketTable_length']");
+
+    @Name("Next")
+    private SelenideElement nextTicketTable = $x("//li[@id='ticketTable_next']");
+
+    @Name("Previous")
+    private SelenideElement previousTicketTable = $x("//li[@id='ticketTable_previous']");
+
+    @Name("Блок кнопок с номерами страниц таблицы тикетов")
+    private SelenideElement ticketTablePaginate = $x("//div[@id='ticketTable_paginate']");
 }

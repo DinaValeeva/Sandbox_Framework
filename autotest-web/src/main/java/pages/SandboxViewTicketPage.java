@@ -18,4 +18,6 @@ public class SandboxViewTicketPage extends WebPage {
     @Name("Приоритет")
     private SelenideElement priorityFinal = $x("//th[contains(text(),'Приоритет')]//parent::tr");
 
+    @Name("Тикеты")
+    private SelenideElement tickets = $x("//a[text()='Тикеты']");
 }
