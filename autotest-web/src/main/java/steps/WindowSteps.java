@@ -32,9 +32,10 @@ public class WindowSteps {
         Selenide.open(url);
         WebDriver driver = Environment.getDriver();
         if (driver == null) {
-            WebDriver currentThreadWebDriver = WebDriverRunner.getWebDriver();
-            Environment.setThreadDriver(currentThreadWebDriver);
+            driver = WebDriverRunner.getWebDriver();
+            Environment.setThreadDriver(driver);
         }
+        driver.manage().window().maximize();
         LOGGER.info("init webdriver for thread: {}", Thread.currentThread().getId());
     }
 
