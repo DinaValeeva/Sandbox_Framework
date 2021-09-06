@@ -58,6 +58,17 @@ public class WebActionSteps {
         LOGGER.info("клик на элемент '{}'", elementName);
     }
 
+    @Если("сделать двойной клик на элемент {string}")
+    public void doubleClickOnElement(String elementName) {
+        SelenideElement element = pageManager
+                .getCurrentPage()
+                .getElement(elementName);
+        element
+                .shouldBe(Condition.visible)
+                .doubleClick();
+        LOGGER.info("двойной клик на элемент '{}'", elementName);
+    }
+
     /**
      * скролл до элемента
      *
@@ -131,7 +142,7 @@ public class WebActionSteps {
         LOGGER.info("в списке '{}' выбран элемент '{}'", list, value);
     }
 
-  @Если("с помощью элемента {string} загрузить файл, расположенный по адресу {string}")
+    @Если("с помощью элемента {string} загрузить файл, расположенный по адресу {string}")
     public void downloadFile(String elementName, String path) {
         SelenideElement element = pageManager
                 .getCurrentPage()
@@ -165,7 +176,7 @@ public class WebActionSteps {
                 .getCurrentPage()
                 .getElement("Таблица тикетов");
         for (int i = 1; i <= ticketNumber; i++) {
-            WebElement ticket = tableTicket.findElement(By.xpath(".//tr[" + i + "]"));
+            WebElement ticket = tableTicket.findElement(By.xpath(".//tbody//tr[" + i + "]"));
             ticket.findElement(By.xpath(".//input[@type='checkbox']")).click();
             checkedTicketNames.add(ticket.findElement(By.xpath(".//div[@class='tickettitle']//a")).getText());
         }
@@ -176,7 +187,7 @@ public class WebActionSteps {
         SelenideElement tableTicket = pageManager
                 .getCurrentPage()
                 .getElement("Таблица тикетов");
-        List<WebElement> allTicketsList = tableTicket.findElements(By.xpath(".//tr"));
+        List<WebElement> allTicketsList = tableTicket.findElements(By.xpath(".//tbody//tr"));
         checkedTicketNames.clear();
         for (WebElement webElement : allTicketsList) {
             checkedTicketNames.add(webElement.findElement(By.xpath(".//div[@class='tickettitle']//a")).getText());
@@ -189,9 +200,9 @@ public class WebActionSteps {
                 .getCurrentPage()
                 .getElement("Таблица тикетов");
         Set<String> allTicketsSet = new HashSet<>();
-        List<WebElement> allTicketsList = tableTicket.findElements(By.xpath(".//tr"));
-        for (int i = 0; i < allTicketsList.size(); i++) {
-            allTicketsSet.add(allTicketsList.get(i).findElement(By.xpath(".//div[@class='tickettitle']//a")).getText());
+        List<WebElement> allTicketsList = tableTicket.findElements(By.xpath(".//tbody//tr"));
+        for (WebElement webElement : allTicketsList) {
+            allTicketsSet.add(webElement.findElement(By.xpath(".//div[@class='tickettitle']//a")).getText());
         }
         Assert.assertFalse(allTicketsSet.containsAll(checkedTicketNames));
     }
@@ -201,7 +212,7 @@ public class WebActionSteps {
         SelenideElement tableTicket = pageManager
                 .getCurrentPage()
                 .getElement("Таблица тикетов");
-        List<WebElement> allTicketsList = tableTicket.findElements(By.xpath(".//tr"));
+        List<WebElement> allTicketsList = tableTicket.findElements(By.xpath(".//tbody//tr"));
         for (WebElement webElement : allTicketsList) {
             Assert.assertTrue(webElement.findElement(By.xpath(".//input[@type='checkbox']")).isSelected());
         }
@@ -227,6 +238,40 @@ public class WebActionSteps {
                 .shouldBe(Condition.checked)
                 .click();
         LOGGER.info("деактивирован чекбокс '{}'", elementName);
+    }
+
+    @И("выбрать все пункты в контекстном меню")
+    public void selectAllButtonsInMenu() {
+        SelenideElement columnVisibility = pageManager
+                .getCurrentPage()
+                .getElement("Контекстное меню Column visibility");
+        List<WebElement> allButtons = columnVisibility.findElements(By.xpath(".//button"));
+        for (WebElement webElement : allButtons) {
+            if (!webElement.getAttribute("class").contains("active")) {
+                webElement.click();
+            }
+        }
+        LOGGER.info("Выбраны все пункты контекстного меню");
+    }
+
+    @И("в таблице {string} произведен клик по столбцу {string}")
+    public void clickColumn(String tableName, String columnName) {
+        SelenideElement table = pageManager
+                .getCurrentPage()
+                .getElement(tableName);
+        WebElement column = table.findElement(By.xpath(".//thead//th[contains(text(),'" + columnName + "')]"));
+        column.click();
+        LOGGER.info("в таблице '{}' произведен клик по столбцу '{}'", tableName, columnName);
+    }
+
+    @И("выбрать {int} страницу таблицы тикетов")
+    public void selectPageTicketTable(Integer pageNumber) {
+        SelenideElement buttonBlock = pageManager
+                .getCurrentPage()
+                .getElement("Блок кнопок с номерами страниц таблицы тикетов");
+        WebElement page = buttonBlock.findElement(By.xpath(".//li//a[contains(text(),'" + pageNumber + "')]"));
+        page.click();
+        LOGGER.info("выбрана '{}' страница таблицы тикетов", pageNumber);
     }
 
 }

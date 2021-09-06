@@ -1,15 +1,19 @@
 package steps;
 
 import actions.WebChecks;
-import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
+import io.cucumber.java.ParameterType;
+import io.cucumber.java.ru.И;
 import io.cucumber.java.ru.Когда;
 import io.cucumber.java.ru.Тогда;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.Assert;
+import ru.lanit.at.utils.Sleep;
 import ru.lanit.at.web.pagecontext.PageManager;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
@@ -217,9 +221,11 @@ public class WebCheckSteps {
     }
 
     @Когда("проверить, что первый тикет удален")
+    @Когда("проверить, что первый тикет отсутствует на странице")
     public void checkFirstTicketDeleted() {
         WebChecks.ticketWithNameAbsentOnPage(WebActionSteps.firstTicketName);
     }
+
     /**
      * проверка активации чекбокса
      *
@@ -244,6 +250,50 @@ public class WebCheckSteps {
         WebChecks.checkAttribute(element, "type", "checkbox", 10);
         WebChecks.isAttributeNotExist(element, "checked", 10);
         LOGGER.info("проверка успешна, чекбокс '{}' активирован", fieldName);
+    }
+
+    /**
+     * проверка сортировки таблицы по столбцу по возрастанию/убыванию
+     *
+     * @param tableName  название таблицы
+     * @param columnName название столбца
+     * @param isAscSort  тип сортировки (по возрастанию)
+     */
+
+    @И("проверить, что в таблице {string} столбец {string} отсортирован по {sortingTypeAscDesc}")
+    public void checkTableSortingType(String tableName, String columnName, boolean isAscSort) {
+        Sleep.pauseSec(1);
+        SelenideElement table = pageManager
+                .getCurrentPage()
+                .getElement(tableName);
+        WebElement column = table.findElement(By.xpath(".//thead//th[contains(text(),'" + columnName + "')]"));
+        if (isAscSort) {
+            Assert.assertEquals(column.getAttribute("class"), "sorting_asc");
+            LOGGER.info("проверка успешна, столбец '{}' отсортирован по возрастанию", columnName);
+        } else {
+            Assert.assertEquals(column.getAttribute("class"), "sorting_desc");
+            LOGGER.info("проверка успешна, столбец '{}' отсортирован по убыванию", columnName);
+        }
+    }
+
+    @ParameterType("(возрастанию|убыванию)")
+    public boolean sortingTypeAscDesc(String type) {
+        return type.equals("возрастанию");
+    }
+
+    /**
+     * проверка номера активной страницы таблицы тикетов
+     *
+     * @param pageNumber номер страницы
+     */
+    @И("проверить, что открыта {int} страница таблицы тикетов")
+    public void selectPageTicketTable(Integer pageNumber) {
+        SelenideElement buttonBlock = pageManager
+                .getCurrentPage()
+                .getElement("Блок кнопок с номерами страниц таблицы тикетов");
+        WebElement page = buttonBlock.findElement(By.xpath(".//li//a[contains(text(),'" + pageNumber + "')]/.."));
+        Assert.assertEquals(page.getAttribute("class"), "paginate_button page-item active");
+        LOGGER.info("проверка успешна, выбрана '{}' страница таблицы тикетов", pageNumber);
     }
 
 }
