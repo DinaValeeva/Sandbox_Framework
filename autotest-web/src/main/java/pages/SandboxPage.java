@@ -122,4 +122,7 @@ public class SandboxPage extends WebPage {
 
     @Name("Блок кнопок с номерами страниц таблицы тикетов")
     private SelenideElement ticketTablePaginate = $x("//div[@id='ticketTable_paginate']");
+
+    @Name("Reports")
+    private SelenideElement reportsSidebar = $x("//a[@class = 'nav-link' and @href='/reports/']");
 }

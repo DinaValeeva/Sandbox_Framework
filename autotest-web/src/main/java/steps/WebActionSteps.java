@@ -11,11 +11,13 @@ import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
+import ru.lanit.at.api.testcontext.ContextHolder;
 import ru.lanit.at.web.pagecontext.PageManager;
 import ru.lanit.at.utils.Sleep;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.io.File;
 
@@ -136,10 +138,27 @@ public class WebActionSteps {
         SelenideElement element = pageManager
                 .getCurrentPage()
                 .getElement(list);
+        if (value.startsWith("#")) {
+            value = ContextHolder.getValue(value.substring(1));
+        }
         element
                 .shouldBe(Condition.visible)
                 .selectOptionContainingText(value);
         LOGGER.info("в списке '{}' выбран элемент '{}'", list, value);
+    }
+
+    @Если("в выпадающем списке {string} выбрать случайное значение и сохранить по ключу {string}")
+    public void selectRandomValueDropdown(String list, String key) {
+        SelenideElement dropdown = pageManager
+                .getCurrentPage()
+                .getElement(list);
+        List<WebElement> valuesList = dropdown.findElements(By.xpath(".//option[not(starts-with(text(), '--'))]"));
+        String value = valuesList.get(new Random().nextInt(valuesList.size())).getText();
+        dropdown
+                .shouldBe(Condition.visible)
+                .selectOptionContainingText(value);
+        ContextHolder.put(key, value);
+        LOGGER.info("в списке '{}' выбран элемент '{}' и сохранен по ключу '{}'", list, value, key);
     }
 
     @Если("с помощью элемента {string} загрузить файл, расположенный по адресу {string}")
