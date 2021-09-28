@@ -11,11 +11,13 @@ import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
-import ru.lanit.at.utils.Sleep;
+import ru.lanit.at.api.testcontext.ContextHolder;
 import ru.lanit.at.web.pagecontext.PageManager;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class WebCheckSteps {
 
@@ -164,6 +166,19 @@ public class WebCheckSteps {
     }
 
     /**
+     * проверка отсутствия текста в поле
+     *
+     * @param fieldName    название поля
+     * @param expectedText текст
+     */
+    @Когда("проверить, что поле {string} не содержит значение {string}")
+    public void checkFieldNotContainsText(String fieldName, String expectedText) {
+        SelenideElement element = pageManager.getCurrentPage().getElement(fieldName);
+        WebChecks.elementTextNotEqualsExpectedText(element, expectedText, 0);
+        LOGGER.info("в поле '{}' отсутствует текст '{}'", fieldName, expectedText);
+    }
+
+    /**
      * проверка значений в полях
      *
      * @param map пара имя поля - ожидаемое наличие текста в поле
@@ -260,18 +275,17 @@ public class WebCheckSteps {
      * @param isAscSort  тип сортировки (по возрастанию)
      */
 
-    @И("проверить, что в таблице {string} столбец {string} отсортирован по {sortingTypeAscDesc}")
+    @Когда("проверить, что в таблице {string} столбец {string} отсортирован по {sortingTypeAscDesc}")
     public void checkTableSortingType(String tableName, String columnName, boolean isAscSort) {
-        Sleep.pauseSec(1);
         SelenideElement table = pageManager
                 .getCurrentPage()
                 .getElement(tableName);
-        WebElement column = table.findElement(By.xpath(".//thead//th[contains(text(),'" + columnName + "')]"));
+        SelenideElement column = table.find(By.xpath(".//thead//th[contains(text(),'" + columnName + "')]"));
         if (isAscSort) {
-            Assert.assertEquals(column.getAttribute("class"), "sorting_asc");
+            WebChecks.checkAttribute(column, "class", "sorting_asc", 10);
             LOGGER.info("проверка успешна, столбец '{}' отсортирован по возрастанию", columnName);
         } else {
-            Assert.assertEquals(column.getAttribute("class"), "sorting_desc");
+            WebChecks.checkAttribute(column, "class", "sorting_desc", 10);
             LOGGER.info("проверка успешна, столбец '{}' отсортирован по убыванию", columnName);
         }
     }
@@ -286,14 +300,69 @@ public class WebCheckSteps {
      *
      * @param pageNumber номер страницы
      */
-    @И("проверить, что открыта {int} страница таблицы тикетов")
+    @Когда("проверить, что открыта {int} страница таблицы тикетов")
     public void selectPageTicketTable(Integer pageNumber) {
         SelenideElement buttonBlock = pageManager
                 .getCurrentPage()
                 .getElement("Блок кнопок с номерами страниц таблицы тикетов");
-        WebElement page = buttonBlock.findElement(By.xpath(".//li//a[contains(text(),'" + pageNumber + "')]/.."));
-        Assert.assertEquals(page.getAttribute("class"), "paginate_button page-item active");
+        SelenideElement page = buttonBlock.find(By.xpath(".//li//a[contains(text(),'" + pageNumber + "')]/.."));
+        WebChecks.checkAttribute(page, "class", "paginate_button page-item active", 10);
         LOGGER.info("проверка успешна, выбрана '{}' страница таблицы тикетов", pageNumber);
+    }
+
+    @И("проверить, что выбранные тикеты отсутствуют")
+    public void verifyCheckedTicketsDeleted() {
+        SelenideElement tableTicket = pageManager
+                .getCurrentPage()
+                .getElement("Таблица тикетов");
+        Set<String> allTicketsSet = new HashSet<>();
+        List<WebElement> allTicketsList = tableTicket.findElements(By.xpath(".//tbody//tr"));
+        for (WebElement webElement : allTicketsList) {
+            allTicketsSet.add(webElement.findElement(By.xpath(".//div[@class='tickettitle']//a")).getText());
+        }
+        Set<String> checkedTicketNames = ContextHolder.getValue("checkedTicketNames");
+        Assert.assertFalse(allTicketsSet.stream().anyMatch(checkedTicketNames::contains), "Выбранные ранее тикеты присутствуют в таблице!");
+        LOGGER.info("проверка успешна, выбранные тикеты отсутствуют");
+    }
+
+    @И("проверить, что выбраны все тикеты")
+    public void verifyCheckedAllTickets() {
+        SelenideElement tableTicket = pageManager
+                .getCurrentPage()
+                .getElement("Таблица тикетов");
+        List<WebElement> allTicketsList = tableTicket.findElements(By.xpath(".//tbody//tr"));
+        for (WebElement webElement : allTicketsList) {
+            Assert.assertTrue(webElement.findElement(By.xpath(".//input[@type='checkbox']")).isSelected());
+        }
+        LOGGER.info("проверка успешна, выбраны все тикеты");
+    }
+
+    @И("проверить, что выбранные тикеты присутствуют")
+    public void verifyCheckedTicketsPresent() {
+        SelenideElement tableTicket = pageManager
+                .getCurrentPage()
+                .getElement("Таблица тикетов");
+        Set<String> allTicketsSet = new HashSet<>();
+        List<WebElement> allTicketsList = tableTicket.findElements(By.xpath(".//tbody//tr"));
+        for (WebElement webElement : allTicketsList) {
+            allTicketsSet.add(webElement.findElement(By.xpath(".//div[@class='tickettitle']//a")).getText());
+        }
+        Set<String> checkedTicketNames = ContextHolder.getValue("checkedTicketNames");
+        Assert.assertTrue(allTicketsSet.containsAll(checkedTicketNames), "Выбранные ранее тикеты не присутствуют в таблице!");
+        LOGGER.info("проверка успешна, выбранные тикеты присутствуют");
+    }
+
+    @И("проверить, что статус выбранных тикетов - {string}")
+    public void verifyCheckedTicketsPresent(String status) {
+        SelenideElement tableTicket = pageManager
+                .getCurrentPage()
+                .getElement("Таблица тикетов");
+        Set<String> checkedTicketNames = ContextHolder.getValue("checkedTicketNames");
+        for (String ticketName : checkedTicketNames) {
+            Assert.assertEquals(status, tableTicket.findElement(By.xpath(".//tbody//tr//a[text()='" + ticketName + "']" +
+                    "/../../following-sibling::td[1]")).getText());
+        }
+        LOGGER.info("проверка успешна, статус выбранных тикетов - '{}'", status);
     }
 
 }
