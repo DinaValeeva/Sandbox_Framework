@@ -125,4 +125,11 @@ public class SandboxPage extends WebPage {
 
     @Name("Reports")
     private SelenideElement reportsSidebar = $x("//a[@class = 'nav-link' and @href='/reports/']");
+
+    @Name("Статус(ы):")
+    private SelenideElement statuses = $x("//select[@id='id_statuses']");
+
+    @Name("Apply Filters")
+    private SelenideElement applyFilters = $x("//input[@value='Apply Filters']");
+
 }
